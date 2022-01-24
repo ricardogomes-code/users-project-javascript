@@ -1,1 +1,1 @@
-alert("Hello world!");
+document.querySelector("#exampleInputName").value = "Ricardo";
