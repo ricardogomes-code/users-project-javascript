@@ -1,15 +1,31 @@
 var fields = document.querySelectorAll("#form-user-create [name]");
 var user = {};
 
-fields.forEach(function(field, index){
+// document.querySelectorAll("button").forEach(function(){
 
-    if (field.name == "gender"){
-        if (field.checked){
+//     this.addEventListener("click", function(){
+//         console.log("clicou");
+//     })
+// })
+
+// document.getElementById("form-user-create").addEventListener("submit", function(){
+//     alert("oi botao submit");
+// })
+
+document.getElementById("form-user-create").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    fields.forEach(function(field, index){
+
+        if (field.name == "gender"){
+            if (field.checked){
+                user[field.name] = field.value;
+            }
+        } else {
             user[field.name] = field.value;
-        }
-    } else {
-        user[field.name] = field.value;
-    }    
+        }    
+    });
+
+    console.log(user);
 });
 
-console.log(user);
