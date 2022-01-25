@@ -14,6 +14,7 @@ class UserController {
 
         let elements = this.formEl.elements;
         
+        //Spread de elements
         [...elements].forEach(function (field, index) {
 
             if (field.name == "gender") {
