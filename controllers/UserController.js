@@ -13,7 +13,7 @@ class UserController {
         let user = {};
 
         let elements = this.formEl.elements;
-        
+
         //Spread de elements
         [...elements].forEach(function (field, index) {
 
@@ -43,34 +43,47 @@ class UserController {
 
         this.formEl.addEventListener("submit", event => {
             event.preventDefault();
-            
+
             let user = this.getObjectUser();
 
-            this.getPhoto((content) => {
-                user.photo = content;
-                this.addLine(user);
-            });
-            
+            this.getPhoto().then(
+                (content) => {
+                    user.photo = content;
+                    this.addLine(user);
+                },
+                (e) => {
+                    console.error(e);
+                }
+                
+            );
         });
     }
 
-    getPhoto(callback){
+    getPhoto() {
 
-        let fileReader = new FileReader();
+        return new Promise((resolve, reject) => {
 
-        let elementsEl = this.formEl.elements;
-        let elements = [...elementsEl].filter(item=>{
-            if (item.name === 'photo') {
-                return item;
+            let fileReader = new FileReader();
+
+            let elementsEl = this.formEl.elements;
+            let elements = [...elementsEl].filter(item => {
+                if (item.name === 'photo') {
+                    return item;
+                }
+            });
+            let file = elements[0].files[0];
+            
+            fileReader.onload = () => {
+                resolve(fileReader.result);
             }
-        });
-        let file = elements[0].files[0];
 
-        fileReader.onload = () => {
-            callback(fileReader.result);
-        }
+            fileReader.onerror = (e)=>{
+                reject(e);
+            };
+            fileReader.readAsDataURL(file); 
+        })
 
-        fileReader.readAsDataURL(file);
+
     }
 
     addLine(dataUser) {
