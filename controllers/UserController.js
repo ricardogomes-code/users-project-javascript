@@ -18,11 +18,11 @@ class UserController {
         //Spread de elements
         [...elements].forEach(function (field, index) {
 
-            if (['name', 'email', 'password'].indexOf(field.name) > -1
-                && !field.value) {
-                    field.parentElement.classList.add('has-error');
-                    isValid = false;
-                }
+            // if (['name', 'email', 'password'].indexOf(field.name) > -1
+            //     && !field.value) {
+            //         field.parentElement.classList.add('has-error');
+            //         isValid = false;
+            //     }
 
             if (field.name == "gender") {
                 if (field.checked) {
@@ -126,6 +126,8 @@ class UserController {
 
         let tr = document.createElement("tr");
 
+        tr.dataset.user = JSON.stringify(dataUser);
+
         tr.innerHTML = `
             <td><img src="${dataUser.photo}" alt="User Image" class="img-circle img-sm"></td>
             <td>${dataUser.name}</td>
@@ -139,5 +141,25 @@ class UserController {
         `;
 
         document.getElementById(this.tableEl.id).appendChild(tr);
+
+        this.updateCount();
+    }
+
+    updateCount() {
+
+        let numUsers = 0;
+        let numAdms = 0;
+        
+        [...this.tableEl.children].forEach(tr=>{
+            
+            numUsers++;
+
+            let user = JSON.parse(tr.dataset.user);
+
+            if (user._admin) numAdms++;
+        });
+
+        document.querySelector("#num-users").innerHTML = numUsers;
+        document.querySelector("#num-adms").innerHTML = numAdms;
     }
 }
