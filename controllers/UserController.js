@@ -66,6 +66,8 @@ class UserController {
 
             let user = this.getObjectUser();
 
+            if (!user) return false;
+
             this.getPhoto().then(
                 (content) => {
                     user.photo = content;
