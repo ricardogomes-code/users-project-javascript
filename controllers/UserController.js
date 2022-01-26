@@ -65,7 +65,6 @@ class UserController {
             
             let fileReader = new FileReader();
 
-            console.dir(this.formEl);
             let formElementsCollection = this.formEl.elements;
 
             //Spread
@@ -86,15 +85,19 @@ class UserController {
             fileReader.onerror = (e)=>{
                 reject(e);
             };
-            fileReader.readAsDataURL(file); 
+
+            if (file) {
+                fileReader.readAsDataURL(file);
+            } else {
+                resolve("dist/img/boxed-bg.jpg");
+            }
+             
         })
 
 
     }
 
     addLine(dataUser) {
-
-        console.log(dataUser);
 
         let tr = document.createElement("tr");
 
