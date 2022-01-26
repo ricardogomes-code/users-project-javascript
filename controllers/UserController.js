@@ -46,7 +46,12 @@ class UserController {
     onSubmit() {
 
         this.formEl.addEventListener("submit", event => {
+
             event.preventDefault();
+
+            let btnSubmit = this.formEl.querySelector("[type=submit");
+            
+            btnSubmit.disabled = true;
 
             let user = this.getObjectUser();
 
@@ -54,6 +59,9 @@ class UserController {
                 (content) => {
                     user.photo = content;
                     this.addLine(user);
+
+                    this.formEl.reset();
+                    btnSubmit.disabled = false;
                 },
                 (e) => {
                     console.error(e);
