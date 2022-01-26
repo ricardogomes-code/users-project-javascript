@@ -62,16 +62,22 @@ class UserController {
     getPhoto() {
 
         return new Promise((resolve, reject) => {
-
+            
             let fileReader = new FileReader();
 
-            let elementsEl = this.formEl.elements;
-            let elements = [...elementsEl].filter(item => {
+            console.dir(this.formEl);
+            let formElementsCollection = this.formEl.elements;
+
+            //Spread
+            let formElementsArray = [...formElementsCollection];
+            
+            let photoElementArray = formElementsArray.filter(item => {
                 if (item.name === 'photo') {
                     return item;
                 }
             });
-            let file = elements[0].files[0];
+            
+            let file = photoElementArray[0].files[0];
             
             fileReader.onload = () => {
                 resolve(fileReader.result);
