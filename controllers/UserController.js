@@ -13,9 +13,8 @@ class UserController {
 
         document.querySelector("#box-user-update .btn-cancel").addEventListener("click", e => {
 
-            //this.showPanelCreate();
+            this.showPanelCreate();
 
-            console.log("clicou em cancelar");
         });
     }
 
@@ -155,8 +154,7 @@ class UserController {
 
             console.log(JSON.parse(tr.dataset.user));
 
-            document.querySelector("#box-user-create").style.display = "none";
-            document.querySelector("#box-user-update").style.display = "block";
+            this.showPanelUpdate();
         })
 
         document.getElementById(this.tableEl.id).appendChild(tr);
