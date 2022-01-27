@@ -6,6 +6,17 @@ class UserController {
         this.tableEl = document.getElementById(tableId);
 
         this.onSubmit();
+        this.onEditCancel();
+    }
+
+    onEditCancel() {
+
+        document.querySelector("#box-user-update .btn-cancel").addEventListener("click", e => {
+
+            //this.showPanelCreate();
+
+            console.log("clicou em cancelar");
+        });
     }
 
     getObjectUser() {
@@ -31,7 +42,7 @@ class UserController {
             } else if (field.name == "admin") {
                 user[field.name] = field.checked;
             }
-            
+
             else {
                 user[field.name] = field.value;
             }
@@ -61,7 +72,7 @@ class UserController {
             event.preventDefault();
 
             let btnSubmit = this.formEl.querySelector("[type=submit");
-            
+
             btnSubmit.disabled = true;
 
             let user = this.getObjectUser();
@@ -79,7 +90,7 @@ class UserController {
                 (e) => {
                     console.error(e);
                 }
-                
+
             );
         });
     }
@@ -87,27 +98,27 @@ class UserController {
     getPhoto() {
 
         return new Promise((resolve, reject) => {
-            
+
             let fileReader = new FileReader();
 
             let formElementsCollection = this.formEl.elements;
 
             //Spread
             let formElementsArray = [...formElementsCollection];
-            
+
             let photoElementArray = formElementsArray.filter(item => {
                 if (item.name === 'photo') {
                     return item;
                 }
             });
-            
+
             let file = photoElementArray[0].files[0];
-            
+
             fileReader.onload = () => {
                 resolve(fileReader.result);
             }
 
-            fileReader.onerror = (e)=>{
+            fileReader.onerror = (e) => {
                 reject(e);
             };
 
@@ -116,7 +127,7 @@ class UserController {
             } else {
                 resolve("dist/img/boxed-bg.jpg");
             }
-             
+
         })
 
 
@@ -135,23 +146,45 @@ class UserController {
             <td>${(dataUser.admin) ? "Sim" : "Não"} </td>
             <td>${Utils.formatDate(dataUser.register)}</td>
             <td>
-                <button type="button" class="btn btn-primary btn-xs btn-flat">Editar</button>
+                <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
                 <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
             </td>
         `;
+
+        tr.querySelector(".btn-edit").addEventListener("click", e => {
+
+            console.log(JSON.parse(tr.dataset.user));
+
+            document.querySelector("#box-user-create").style.display = "none";
+            document.querySelector("#box-user-update").style.display = "block";
+        })
 
         document.getElementById(this.tableEl.id).appendChild(tr);
 
         this.updateCount();
     }
 
+    showPanelCreate() {
+
+        document.querySelector("#box-user-create").style.display = "block";
+        document.querySelector("#box-user-update").style.display = "none";
+
+    }
+
+    showPanelUpdate() {
+
+        document.querySelector("#box-user-create").style.display = "none";
+        document.querySelector("#box-user-update").style.display = "block";
+
+    }
+
     updateCount() {
 
         let numUsers = 0;
         let numAdms = 0;
-        
-        [...this.tableEl.children].forEach(tr=>{
-            
+
+        [...this.tableEl.children].forEach(tr => {
+
             numUsers++;
 
             let user = JSON.parse(tr.dataset.user);
