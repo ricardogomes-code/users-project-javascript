@@ -2,28 +2,43 @@ class UserController {
 
     constructor(formId, tableId) {
 
-        this.formEl = document.getElementById(formId);
-        this.tableEl = document.getElementById(tableId);
+        //this.formEl = document.getElementById(formId);
+        //this.tableEl = document.getElementById(tableId);
 
         this.onSubmit();
-        this.onEditCancel();
+        this.onEdit();
     }
 
-    onEditCancel() {
+    onEdit() {
 
-        document.querySelector("#box-user-update .btn-cancel").addEventListener("click", e => {
+        let form = document.querySelector("#form-user-update");
+
+        form.querySelector(".btn-cancel").addEventListener("click", e => {
 
             this.showPanelCreate();
 
         });
+
+        form.addEventListener("submit", e=> {
+
+            e.preventDefault();
+
+            let btn = form.querySelector("[type=submit");
+            
+            btn.disabled = true;
+
+            let user = this.getUser(form);
+
+            console.log(user)
+        })
     }
 
-    getObjectUser() {
+    getUser(formEl) {
 
         let user = {};
         let isValid = true;
 
-        let elements = this.formEl.elements;
+        let elements = formEl.elements;
 
         //Spread de elements
         [...elements].forEach(function (field, index) {
@@ -51,7 +66,7 @@ class UserController {
             return false;
         }
 
-        let objectUser = new User(
+        user = new User(
             user.name,
             user.gender,
             user.birth,
@@ -61,20 +76,23 @@ class UserController {
             user.photo,
             user.admin
         );
-        return objectUser;
+
+        return user;
     }
 
     onSubmit() {
 
-        this.formEl.addEventListener("submit", event => {
+        let form  = document.querySelector("#form-user-create");
+
+        form.addEventListener("submit", event => {
 
             event.preventDefault();
 
-            let btnSubmit = this.formEl.querySelector("[type=submit");
+            let btnSubmit = form.querySelector("[type=submit");
 
             btnSubmit.disabled = true;
 
-            let user = this.getObjectUser();
+            let user = this.getUser(form);
 
             if (!user) return false;
 
@@ -83,7 +101,7 @@ class UserController {
                     user.photo = content;
                     this.addLine(user);
 
-                    this.formEl.reset();
+                    form.reset();
                     btnSubmit.disabled = false;
                 },
                 (e) => {
@@ -100,18 +118,18 @@ class UserController {
 
             let fileReader = new FileReader();
 
-            let formElementsCollection = this.formEl.elements;
+            let form = document.querySelector("#form-user-create");
 
             //Spread
-            let formElementsArray = [...formElementsCollection];
+            let elements = [...form.elements];
 
-            let photoElementArray = formElementsArray.filter(item => {
+            let photos = elements.filter(item => {
                 if (item.name === 'photo') {
                     return item;
                 }
             });
 
-            let file = photoElementArray[0].files[0];
+            let file = photos[0].files[0];
 
             fileReader.onload = () => {
                 resolve(fileReader.result);
@@ -179,7 +197,7 @@ class UserController {
 
                             field.checked = true;
                             
-                            console.dir(field);
+                            //console.dir(field);
                             
                             break;                            
 
@@ -196,7 +214,9 @@ class UserController {
             this.showPanelUpdate();
         })
 
-        document.getElementById(this.tableEl.id).appendChild(tr);
+        let table = document.querySelector("#table-users");
+
+        table.appendChild(tr);
 
         this.updateCount();
     }
@@ -220,7 +240,9 @@ class UserController {
         let numUsers = 0;
         let numAdms = 0;
 
-        [...this.tableEl.children].forEach(tr => {
+        let table = document.querySelector("#table-users");
+
+        [...table.children].forEach(tr => {
 
             numUsers++;
 
