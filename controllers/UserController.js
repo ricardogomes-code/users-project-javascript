@@ -30,22 +30,32 @@ class UserController {
 
             let user = this.getUser(form);
 
-            console.log(user)
+            console.log("user", user)
 
             let index = form.dataset.trIndex;
 
             let tr = table.rows[index];
 
-            tr.dataset.user = JSON.stringify(user);
+            let userOld = JSON.parse(tr.dataset.user);
 
-            console.log(tr.dataset.user);
+            console.log("userOld", userOld);
+
+            let userAssign = Object.assign({}, userOld, user);
+
+            if (!user.photo) userAssign._photo = userOld._photo;
+
+            console.log("userAssign", userAssign);
+
+            tr.dataset.user = JSON.stringify(userAssign);
+
+            //console.log(tr.dataset.user);
 
             tr.innerHTML = `
-                <td><img src="${user.photo}" alt="User Image" class="img-circle img-sm"></td>
-                <td>${user.name}</td>
-                <td>${user.email}</td>
-                <td>${(user.admin) ? "Sim" : "Não"} </td>
-                <td>${Utils.formatDate(user.register)}</td>
+                <td><img src="${userAssign._photo}" alt="User Image" class="img-circle img-sm"></td>
+                <td>${userAssign._name}</td>
+                <td>${userAssign._email}</td>
+                <td>${(userAssign._admin) ? "Sim" : "Não"} </td>
+                <td>${Utils.formatDate(userAssign._register)}</td>
                 <td>
                     <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
                     <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
@@ -57,6 +67,10 @@ class UserController {
             this.updateCount();
 
             btn.disabled = false;
+
+            form.reset();
+
+            this.showPanelCreate();
         });
     }
 
