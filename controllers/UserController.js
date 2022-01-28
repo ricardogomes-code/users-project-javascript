@@ -1,9 +1,10 @@
 class UserController {
 
-    constructor(formId, tableId) {
+    constructor(formCreateId, formUpdateId, tableId) {
 
-        //this.formEl = document.getElementById(formId);
-        //this.tableEl = document.getElementById(tableId);
+        //this.formCreate = document.getElementById(formCreateId);
+        this.formUpdate = document.getElementById(formUpdateId);
+        //this.table = document.getElementById(tableId);
 
         this.onSubmit();
         this.onEdit();
@@ -42,44 +43,57 @@ class UserController {
 
             let userAssign = Object.assign({}, userOld, user);
 
-            if (!user.photo) userAssign._photo = userOld._photo;
+            
 
-            console.log("userAssign", userAssign);
+            
+            this.getPhoto(this.formUpdate).then(
 
-            tr.dataset.user = JSON.stringify(userAssign);
+                (content) => {
 
-            //console.log(tr.dataset.user);
-
-            tr.innerHTML = `
-                <td><img src="${userAssign._photo}" alt="User Image" class="img-circle img-sm"></td>
-                <td>${userAssign._name}</td>
-                <td>${userAssign._email}</td>
-                <td>${(userAssign._admin) ? "Sim" : "Não"} </td>
-                <td>${Utils.formatDate(userAssign._register)}</td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
-                    <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
-                </td>
-            `;
-
-            this.addEventsTr(tr);
-
-            this.updateCount();
-
-            btn.disabled = false;
-
-            form.reset();
-
-            this.showPanelCreate();
+                    if (!user.photo) {
+                        userAssign._photo = userOld._photo;
+                    } else {
+                        userAssign._photo = content;
+                    }
+        
+                    console.log("userAssign", userAssign);
+        
+                    tr.dataset.user = JSON.stringify(userAssign);
+        
+                    //console.log(tr.dataset.user);
+        
+                    tr.innerHTML = `
+                        <td><img src="${userAssign._photo}" alt="User Image" class="img-circle img-sm"></td>
+                        <td>${userAssign._name}</td>
+                        <td>${userAssign._email}</td>
+                        <td>${(userAssign._admin) ? "Sim" : "Não"} </td>
+                        <td>${Utils.formatDate(userAssign._register)}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
+                            <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
+                        </td>
+                    `;
+        
+                    this.addEventsTr(tr);
+        
+                    this.updateCount();
+        
+                    btn.disabled = false;
+        
+                    form.reset();
+        
+                    this.showPanelCreate();                    
+                }
+            )
         });
     }
 
-    getUser(formEl) {
+    getUser(form) {
 
         let user = {};
         let isValid = true;
 
-        let elements = formEl.elements;
+        let elements = form.elements;
 
         //Spread de elements
         [...elements].forEach(function (field, index) {
@@ -137,7 +151,7 @@ class UserController {
 
             if (!user) return false;
 
-            this.getPhoto().then(
+            this.getPhoto(form).then(
                 (content) => {
                     user.photo = content;
                     this.addLine(user);
@@ -153,13 +167,11 @@ class UserController {
         });
     }
 
-    getPhoto() {
+    getPhoto(form) {
 
         return new Promise((resolve, reject) => {
 
             let fileReader = new FileReader();
-
-            let form = document.querySelector("#form-user-create");
 
             //Spread
             let elements = [...form.elements];
