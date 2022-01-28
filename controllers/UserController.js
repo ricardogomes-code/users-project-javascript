@@ -12,6 +12,7 @@ class UserController {
     onEdit() {
 
         let form = document.querySelector("#form-user-update");
+        let table = document.querySelector("#table-users");
 
         form.querySelector(".btn-cancel").addEventListener("click", e => {
 
@@ -19,18 +20,44 @@ class UserController {
 
         });
 
-        form.addEventListener("submit", e=> {
+        form.addEventListener("submit", e => {
 
             e.preventDefault();
 
             let btn = form.querySelector("[type=submit");
-            
+
             btn.disabled = true;
 
             let user = this.getUser(form);
 
             console.log(user)
-        })
+
+            let index = form.dataset.trIndex;
+
+            let tr = table.rows[index];
+
+            tr.dataset.user = JSON.stringify(user);
+
+            console.log(tr.dataset.user);
+
+            tr.innerHTML = `
+                <td><img src="${user.photo}" alt="User Image" class="img-circle img-sm"></td>
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td>${(user.admin) ? "Sim" : "Não"} </td>
+                <td>${Utils.formatDate(user.register)}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
+                    <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
+                </td>
+            `;
+
+            this.addEventsTr(tr);
+
+            this.updateCount();
+
+            btn.disabled = false;
+        });
     }
 
     getUser(formEl) {
@@ -82,7 +109,7 @@ class UserController {
 
     onSubmit() {
 
-        let form  = document.querySelector("#form-user-create");
+        let form = document.querySelector("#form-user-create");
 
         form.addEventListener("submit", event => {
 
@@ -168,38 +195,51 @@ class UserController {
             </td>
         `;
 
+        this.addEventsTr(tr);
+
+        let table = document.querySelector("#table-users");
+
+        table.appendChild(tr);
+
+        this.updateCount();
+    }
+
+    addEventsTr(tr) {
+
         tr.querySelector(".btn-edit").addEventListener("click", e => {
 
             let json = JSON.parse(tr.dataset.user);
             let form = document.querySelector("#form-user-update");
 
+            form.dataset.trIndex = tr.sectionRowIndex;
+
             for (let name in json) {
 
-                let nameInput = "[name="+name.replace("_", "")+"]";
-                
+                let nameInput = "[name=" + name.replace("_", "") + "]";
+
                 let field = form.querySelector(nameInput);
 
                 if (field) {
 
-                    switch(field.type) {
+                    switch (field.type) {
 
-                        case "file": 
-                           continue;
-                           break; 
+                        case "file":
+                            continue;
+                            break;
 
-                        case "radio":   
+                        case "radio":
                             //console.dir(field);
 
                             //field.value = json[name];
-                            
-                            field = form.querySelector("[name="+name.replace("_", "")+"][value="+json[name]+"]");
+
+                            field = form.querySelector("[name=" + name.replace("_", "") + "][value=" + json[name] + "]");
                             //field = form.querySelector("[name=gender][value=F");
 
                             field.checked = true;
-                            
+
                             //console.dir(field);
-                            
-                            break;                            
+
+                            break;
 
                         case "checkbox":
                             field.checked = json[name];
@@ -208,18 +248,13 @@ class UserController {
                         default:
                             field.value = json[name];
                     }
-                }              
+                }
             }
 
             this.showPanelUpdate();
-        })
-
-        let table = document.querySelector("#table-users");
-
-        table.appendChild(tr);
-
-        this.updateCount();
+        });
     }
+
 
     showPanelCreate() {
 
