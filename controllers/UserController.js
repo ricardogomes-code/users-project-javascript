@@ -251,6 +251,8 @@ class UserController {
                 }
             }
 
+            form.querySelector(".photo").src = json._photo;
+
             this.showPanelUpdate();
         });
     }
