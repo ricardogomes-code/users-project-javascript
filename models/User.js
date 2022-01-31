@@ -80,12 +80,12 @@ class User {
         let users = User.getUsersStorage();
 
         if (this.id > 0) {
-            console.log("if");
+
             let user = users.map(u => {
 
                 if (u._id == this.id) {
 
-                    u = this;
+                    Object.assign(u, this);
                 }
 
                 return u;
