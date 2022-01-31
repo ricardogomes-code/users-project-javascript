@@ -8,6 +8,8 @@ class UserController {
 
         this.onSubmit();
         this.onEdit();
+        
+        this.selectAll();
     }
 
     onEdit() {
@@ -154,9 +156,13 @@ class UserController {
             this.getPhoto(form).then(
                 (content) => {
                     user.photo = content;
+
+                    this.insert(user);
+
                     this.addLine(user);
 
                     form.reset();
+
                     btnSubmit.disabled = false;
                 },
                 (e) => {
@@ -201,7 +207,7 @@ class UserController {
         })
 
 
-    }
+    }    
 
     addLine(dataUser) {
 
@@ -326,5 +332,42 @@ class UserController {
 
         document.querySelector("#num-users").innerHTML = numUsers;
         document.querySelector("#num-adms").innerHTML = numAdms;
+    }
+
+    insert(data) {
+
+        let users = this.getUsersStorage();
+
+        users.push(data);
+
+        sessionStorage.setItem("users", JSON.stringify(users));
+    }
+
+    getUsersStorage() {
+
+        let users = [];
+
+        let item = sessionStorage.getItem("users");
+
+        if  (item) {
+
+            users = JSON.parse(item);
+        }
+
+        return users;
+    }
+
+    selectAll() {
+
+        let users = this.getUsersStorage();
+
+        users.forEach(dataUser => {
+
+            let user = new User();
+
+            user.loadFromJSON(dataUser);
+
+            this.addLine(user);
+        });
     }
 }
