@@ -58,25 +58,11 @@ class UserController {
                         userAssign._photo = content;
                     }
         
-                    console.log("userAssign", userAssign);
+                    user = new User();
+
+                    user.loadFromJSON(userAssign);
         
-                    tr.dataset.user = JSON.stringify(userAssign);
-        
-                    //console.log(tr.dataset.user);
-        
-                    tr.innerHTML = `
-                        <td><img src="${userAssign._photo}" alt="User Image" class="img-circle img-sm"></td>
-                        <td>${userAssign._name}</td>
-                        <td>${userAssign._email}</td>
-                        <td>${(userAssign._admin) ? "Sim" : "Não"} </td>
-                        <td>${Utils.formatDate(userAssign._register)}</td>
-                        <td>
-                            <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
-                            <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
-                        </td>
-                    `;
-        
-                    this.addEventsTr(tr);
+                    tr = this.getTr(user, tr);
         
                     this.updateCount();
         
@@ -211,7 +197,18 @@ class UserController {
 
     addLine(dataUser) {
 
-        let tr = document.createElement("tr");
+        let tr = this.getTr(dataUser);        
+
+        let table = document.querySelector("#table-users");
+
+        table.appendChild(tr);
+
+        this.updateCount();
+    }
+
+    getTr(dataUser, tr = null) {
+
+        if (tr === null) tr = document.createElement("tr");
 
         tr.dataset.user = JSON.stringify(dataUser);
 
@@ -229,11 +226,7 @@ class UserController {
 
         this.addEventsTr(tr);
 
-        let table = document.querySelector("#table-users");
-
-        table.appendChild(tr);
-
-        this.updateCount();
+        return tr;
     }
 
     addEventsTr(tr) {
