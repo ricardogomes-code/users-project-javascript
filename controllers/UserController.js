@@ -340,14 +340,16 @@ class UserController {
 
         users.push(data);
 
-        sessionStorage.setItem("users", JSON.stringify(users));
+        //sessionStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("users", JSON.stringify(users));
     }
 
     getUsersStorage() {
 
         let users = [];
 
-        let item = sessionStorage.getItem("users");
+        //let item = sessionStorage.getItem("users");
+        let item = localStorage.getItem("users");
 
         if  (item) {
 
