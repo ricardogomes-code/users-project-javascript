@@ -124,4 +124,11 @@ class User {
 
         return window.id;
     }
+
+    remove() {
+
+        let users = User.getUsersStorage();
+
+        console.log(users);
+    }
 }
