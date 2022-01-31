@@ -129,6 +129,12 @@ class User {
 
         let users = User.getUsersStorage();
 
-        console.log(users);
+        users.forEach((userData, index) => {
+
+            if (this._id == userData._d) {
+
+                console.log(userData, index);
+            }
+        });
     }
 }
