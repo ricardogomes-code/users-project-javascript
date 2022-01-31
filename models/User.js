@@ -1,6 +1,8 @@
 class User {
 
     constructor(name, gender, birth, country, email, password, photo, admin, register) {
+
+        this._id;
         this._name = name;
         this._gender = gender;
         this._birth = birth;
@@ -12,43 +14,48 @@ class User {
         this._register = new Date();
     }
 
-    get name(){
+    get id() {
+
+        return this._id;
+    }
+
+    get name() {
         return this._name;
     }
 
-    get gender(){
+    get gender() {
         return this._gender;
     }
 
-    get birth(){
+    get birth() {
         return this._birth;
     }
 
-    get country(){
+    get country() {
         return this._country;
     }
 
-    get email(){
+    get email() {
         return this._email;
     }
 
-    get password(){
+    get password() {
         return this._password;
     }
 
-    get photo(){
+    get photo() {
         return this._photo;
     }
 
-    get admin(){
+    get admin() {
         return this._admin;
     }
 
-    get register(){
+    get register() {
         return this._register;
     }
 
-    set photo(value){
+    set photo(value) {
         this._photo = value;
     }
 
@@ -56,7 +63,7 @@ class User {
 
         for (let name in json) {
 
-            switch(name) {
+            switch (name) {
 
                 case "_register":
                     this[name] = new Date(json[name]);
@@ -66,5 +73,55 @@ class User {
                     this[name] = json[name];
             }
         }
+    }
+
+    save() {
+
+        let users = User.getUsersStorage();
+
+        if (this.id > 0) {
+            console.log("if");
+            let user = users.map(u => {
+
+                if (u._id == this.id) {
+
+                    u = this;
+                }
+
+                return u;
+            });
+
+        } else {
+            
+            this._id = this.getNewID();
+
+            users.push(this);
+        }
+
+        localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    static getUsersStorage() {
+
+        let users = [];
+
+        let item = localStorage.getItem("users");
+
+        if (item) {
+
+            users = JSON.parse(item);
+        }
+
+        return users;
+    }
+
+    getNewID() {
+
+        //without id, then start id = 1
+        if (!window.id) window.id = 0
+        
+        window.id++;
+
+        return window.id;
     }
 }

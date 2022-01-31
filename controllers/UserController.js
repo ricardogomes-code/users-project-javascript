@@ -33,15 +33,11 @@ class UserController {
 
             let user = this.getUser(form);
 
-            console.log("user", user)
-
             let index = form.dataset.trIndex;
 
             let tr = table.rows[index];
 
             let userOld = JSON.parse(tr.dataset.user);
-
-            console.log("userOld", userOld);
 
             let userAssign = Object.assign({}, userOld, user);
 
@@ -61,6 +57,8 @@ class UserController {
                     user = new User();
 
                     user.loadFromJSON(userAssign);
+
+                    user.save();
         
                     tr = this.getTr(user, tr);
         
@@ -143,7 +141,7 @@ class UserController {
                 (content) => {
                     user.photo = content;
 
-                    this.insert(user);
+                    user.save();
 
                     this.addLine(user);
 
@@ -263,17 +261,8 @@ class UserController {
                             break;
 
                         case "radio":
-                            //console.dir(field);
-
-                            //field.value = json[name];
-
                             field = form.querySelector("[name=" + name.replace("_", "") + "][value=" + json[name] + "]");
-                            //field = form.querySelector("[name=gender][value=F");
-
                             field.checked = true;
-
-                            //console.dir(field);
-
                             break;
 
                         case "checkbox":
@@ -327,21 +316,10 @@ class UserController {
         document.querySelector("#num-adms").innerHTML = numAdms;
     }
 
-    insert(data) {
-
-        let users = this.getUsersStorage();
-
-        users.push(data);
-
-        //sessionStorage.setItem("users", JSON.stringify(users));
-        localStorage.setItem("users", JSON.stringify(users));
-    }
-
     getUsersStorage() {
 
         let users = [];
 
-        //let item = sessionStorage.getItem("users");
         let item = localStorage.getItem("users");
 
         if  (item) {
