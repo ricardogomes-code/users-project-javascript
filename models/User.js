@@ -129,12 +129,16 @@ class User {
 
         let users = User.getUsersStorage();
 
+        console.log(users);
+
         users.forEach((userData, index) => {
 
-            if (this._id == userData._d) {
+            if (this._id == userData._id) {
 
-                console.log(userData, index);
+                users.splice(index, 1);
             }
         });
+
+        localStorage.setItem("users", JSON.stringify(users));
     }
 }
