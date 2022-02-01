@@ -3,13 +3,49 @@ class UserController {
     constructor(formCreateId, formUpdateId, tableId) {
 
         //this.formCreate = document.getElementById(formCreateId);
-        this.formUpdate = document.getElementById(formUpdateId);
+        //this.formUpdate = document.getElementById(formUpdateId);
         //this.table = document.getElementById(tableId);
 
         this.onSubmit();
         this.onEdit();
         
         this.selectAll();
+    }
+
+    onSubmit() {
+
+        let form = document.querySelector("#form-user-create");
+
+        form.addEventListener("submit", event => {
+
+            event.preventDefault();
+
+            let btnSubmit = form.querySelector("[type=submit");
+
+            btnSubmit.disabled = true;
+
+            let user = this.getUser(form);
+
+            if (!user) return false;
+
+            this.getPhoto(form).then(
+                (content) => {
+                    user.photo = content;
+
+                    //user.save();
+
+                    this.addLine(user);
+
+                    form.reset();
+
+                    btnSubmit.disabled = false;
+                },
+                (e) => {
+                    console.error(e);
+                }
+
+            );
+        });
     }
 
     onEdit() {
@@ -44,7 +80,7 @@ class UserController {
             
 
             
-            this.getPhoto(this.formUpdate).then(
+            this.getPhoto(form).then(
 
                 (content) => {
 
@@ -58,7 +94,7 @@ class UserController {
 
                     user.loadFromJSON(userAssign);
 
-                    user.save();
+                    //user.save();
         
                     tr = this.getTr(user, tr);
         
@@ -119,42 +155,6 @@ class UserController {
         );
 
         return user;
-    }
-
-    onSubmit() {
-
-        let form = document.querySelector("#form-user-create");
-
-        form.addEventListener("submit", event => {
-
-            event.preventDefault();
-
-            let btnSubmit = form.querySelector("[type=submit");
-
-            btnSubmit.disabled = true;
-
-            let user = this.getUser(form);
-
-            if (!user) return false;
-
-            this.getPhoto(form).then(
-                (content) => {
-                    user.photo = content;
-
-                    user.save();
-
-                    this.addLine(user);
-
-                    form.reset();
-
-                    btnSubmit.disabled = false;
-                },
-                (e) => {
-                    console.error(e);
-                }
-
-            );
-        });
     }
 
     getPhoto(form) {
