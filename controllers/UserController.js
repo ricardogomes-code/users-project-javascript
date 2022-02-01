@@ -322,23 +322,9 @@ class UserController {
         document.querySelector("#num-adms").innerHTML = numAdms;
     }
 
-    getUsersStorage() {
-
-        let users = [];
-
-        let item = localStorage.getItem("users");
-
-        if  (item) {
-
-            users = JSON.parse(item);
-        }
-
-        return users;
-    }
-
     selectAll() {
 
-        let users = this.getUsersStorage();
+        let users = User.getUsersStorage();
 
         users.forEach(dataUser => {
 
